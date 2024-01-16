@@ -1,3 +1,4 @@
+import random
 import string
 
 # Define the possible characters for the password
@@ -7,4 +8,5 @@ symbols = string.punctuation
 
 # Combine all characters
 all_characters = letters + digits + symbols
+
 print(all_characters)
