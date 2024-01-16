@@ -10,4 +10,6 @@ def generate_password(length):
     # Combine all characters
     all_characters = letters + digits + symbols
     password = ''
-    # Generate password    
+    # Generate password
+    for i in range(length):
+        password += secrets.choice(all_characters)
