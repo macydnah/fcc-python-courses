@@ -12,4 +12,5 @@ def generate_password(length):
     password = ''
     # Generate password
     for _ in range(length):
-        password += secrets.choice(all_characters) 
+        password += secrets.choice(all_characters)
+    return password
