@@ -10,3 +10,4 @@ symbols = string.punctuation
 all_characters = letters + digits + symbols
 
 print(all_characters)
+print(random.random())
