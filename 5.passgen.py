@@ -24,6 +24,7 @@ def generate_password(length, nums, special_chars, uppercase, lowercase):
             (special_chars, fr'[{symbols}]')            
         ]
         # Check constraints
+        count = 0
         for constraint, pattern in constraints:
             constraint <= len(re.findall(pattern, password))
     return password
