@@ -3,3 +3,4 @@ copper = {
     'age': 2
 }
 copper['food'] = 'hay'
+print(copper)
