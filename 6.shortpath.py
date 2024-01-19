@@ -10,7 +10,6 @@ def shortest_path(graph, start):
     distances = {node: 0 if node == start else float('inf') for node in graph}
     paths = {node: [] for node in graph}
     paths[start].append(start)
-    
     while unvisited:
         current = min(unvisited, key=distances.get)
         for node, distance in graph[current]:
@@ -20,6 +19,7 @@ def shortest_path(graph, start):
                     paths[node] = paths[current]
                 else:
                     paths[node].extend(paths[current])
+                paths[node].append(node)
     print(f'Unvisited: {unvisited}\nDistances: {distances}\nPaths: {paths}')
     
 #shortest_path(my_graph, 'A')
