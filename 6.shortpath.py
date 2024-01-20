@@ -1,4 +1,3 @@
-
 my_graph = {
     'A': [('B', 3), ('D', 1)],
     'B': [('A', 3), ('C', 4)],
@@ -25,6 +24,8 @@ def shortest_path(graph, start, target = ''):
         unvisited.remove(current)
     targets_to_print = [target] if target else graph
     for node in targets_to_print:
+        if node == start:
+            continue
         print(f'\n{start}-{node} distance: {distances[node]}\nPath: {" -> ".join(paths[node])}')
-
+    
 shortest_path(my_graph, 'A')
