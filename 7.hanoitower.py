@@ -3,4 +3,3 @@ rods = {
     'B': [],
     'C': []
 }
-print(type(rods['A']))
