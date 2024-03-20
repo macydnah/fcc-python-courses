@@ -8,6 +8,7 @@ rods = {
 }
 
 def move(n, source, auxiliary, target):
+    # display starting configuration
     print(rods)
 
 # initiate call from source A to target C with auxiliary B
