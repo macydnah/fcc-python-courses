@@ -26,3 +26,5 @@ def square_root_bisection(square_target, tolerance=1e-7, max_iterations=100):
         else:
             print(f'The square root of {square_target} is approximately {root}')
     return root
+
+N = 16
