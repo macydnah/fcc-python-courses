@@ -21,4 +21,6 @@ def square_root_bisection(square_target, tolerance=1e-7, max_iterations=100):
                 low = mid
             else:
                 high = mid
+        if root is None:
+            print(f'Failed to converge within {max_iterations} iterations.')
 
