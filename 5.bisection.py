@@ -19,4 +19,6 @@ def square_root_bisection(square_target, tolerance=1e-7, max_iterations=100):
                 break
             elif square_mid < square_target:
                 low = mid
+            else:
+                high = mid
 
