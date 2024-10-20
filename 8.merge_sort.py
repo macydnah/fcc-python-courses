@@ -32,3 +32,6 @@ def merge_sort(array):
         array[sorted_index] = right_part[right_array_index]
         right_array_index += 1
         sorted_index += 1
+
+if __name__ == '__main__':
+    pass
