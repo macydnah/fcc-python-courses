@@ -6,3 +6,7 @@ def merge_sort(array):
 
     merge_sort(left_part)
     merge_sort(right_part)
+
+    left_array_index = 0
+    right_array_index = 0
+    sorted_index = 0
