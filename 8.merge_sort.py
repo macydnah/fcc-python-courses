@@ -34,4 +34,4 @@ def merge_sort(array):
         sorted_index += 1
 
 if __name__ == '__main__':
-    pass
+    numbers = [4, 10, 6, 14, 2, 1, 8, 5]
