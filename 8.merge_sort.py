@@ -12,4 +12,5 @@ def merge_sort(array):
     sorted_index = 0
 
     while left_array_index < len(left_part) and right_array_index < len(right_part):
-        pass
+        if left_part[left_array_index] < right_part[right_array_index]:
+            pass
