@@ -1,2 +1,2 @@
-def merge_sort():
+def merge_sort(array):
     pass
