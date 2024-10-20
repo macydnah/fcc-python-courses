@@ -10,3 +10,6 @@ def merge_sort(array):
     left_array_index = 0
     right_array_index = 0
     sorted_index = 0
+
+    while left_array_index < len(left_part) and right_array_index < len(right_part):
+        pass
