@@ -5,4 +5,4 @@ def merge_sort(array):
     right_part = array[middle_point:]
 
     merge_sort(left_part)
-    merge_sort()
+    merge_sort(right_part)
