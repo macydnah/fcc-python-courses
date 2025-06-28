@@ -59,45 +59,27 @@ def init(time_str, day=None):
         DURATION['hour'] = int(h_m[0])
         DURATION['minute'] = int(h_m[1])
 
-def clock_12_to_24(hour, meridiem):
-    """Convert 12-hour format to 24-hour format."""
-    if meridiem == 'PM' and hour != 12:
-        return hour + 12
-    elif meridiem == 'AM' and hour == 12:
-        return 0
-    return hour
-
-def clock_24_to_12(hour):
-    """Convert 24-hour format to 12-hour format."""
-    if hour == 0:
-        return 12, 'AM'
-    elif hour < 12:
-        return hour % 12, 'AM'
-    elif hour == 12:
-        return hour, 'PM'
-    else:
-        return hour % 12, 'PM'
-
-def clock_convert(hour, meridiem, from_to):
+def clock(hour, meridiem, **convert_to):
     """Convert time between 12-hour and 24-hour formats."""
-    match from_to:
-        case '12_to_24':
-            if meridiem == 'PM' and hour != 12:
-                return hour + 12
-            elif meridiem == 'AM' and hour == 12:
-                return 0
-            return hour
-        case '24_to_12':
-            if hour == 0:
-                return 12, 'AM'
-            elif hour < 12:
-                return hour % 12, 'AM'
-            elif hour == 12:
-                return hour, 'PM'
-            else:
-                return hour % 12, 'PM'
-        case _:
-            raise ValueError("Invalid conversion type. Use '12_to_24' or '24_to_12'.")
+    for to in convert_to.values():
+        match to:
+            case '24-hour':
+                if meridiem == 'PM' and hour != 12:
+                    return hour + 12
+                elif meridiem == 'AM' and hour == 12:
+                    return 0
+                return hour
+            case '12-hour':
+                if hour == 0:
+                    return 12, 'AM'
+                elif hour < 12:
+                    return hour % 12, 'AM'
+                elif hour == 12:
+                    return hour, 'PM'
+                else:
+                    return hour % 12, 'PM'
+            case _:
+                raise ValueError("Invalid conversion type. Use convert_to='24-hour' or convert_to='12-hour'.")
 
 def fix_overflow_in(time, **overflow):
     """Check if minutes, hours, days overflow and adjust accordingly."""
@@ -138,9 +120,8 @@ def add_time(start, duration, day=None):
 
     print(f'Start hour: {TIME["hour"]}, Start minute: {TIME["minute"]}, Start period: {TIME["meridiem"]}, Start day: {TIME["day"][start_day] if day else "N/A"}')
 
-    # Convert 12'clock to 24'clock and start doing operations
-    # TIME['hour'] = clock_12_to_24(TIME['hour'], TIME['meridiem'])
-    TIME['hour'] = clock_convert(TIME['hour'], TIME['meridiem'], '12_to_24')
+    # Convert 12-hour to 24-hour clock and start doing operations
+    TIME['hour'] = clock(TIME['hour'], TIME['meridiem'], convert_to='24-hour')
 
     TIME['hour'] += DURATION['hour']
     TIME['minute'] += DURATION['minute']
@@ -151,9 +132,9 @@ def add_time(start, duration, day=None):
 
     TIME['hour'], days_later = fix_overflow_in(TIME['hour'], to='days_later')
 
-    # TIME['hour'], TIME['meridiem'] = clock_24_to_12(TIME['hour'])
-    TIME['hour'], TIME['meridiem'] = clock_convert(TIME['hour'], TIME['meridiem'], '24_to_12')
-    # Finished operations and converted back to 12'clock, now define the new time
+    # 24-hour clocks have None meridiem
+    TIME['hour'], TIME['meridiem'] = clock(TIME['hour'], None, convert_to='12-hour')
+    # Converted back to 12-hour clock, now define the new time
     new_time = f'{TIME["hour"]}:{TIME["minute"]:02d} {TIME["meridiem"]}'
     if day:
         new_time += f', {TIME["day"][(start_day + days_later) % 7]}'
