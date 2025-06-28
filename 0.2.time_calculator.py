@@ -16,10 +16,10 @@ Final result: {\
 # add_time('6:30 PM', '205:12') should return '7:42 AM (9 days later)'
 
 test_weekday = ''
-# test_start, test_duration = '3:00 PM', '3:10'
+test_start, test_duration = '3:00 PM', '3:10'
 # test_start, test_duration, test_weekday = '11:30 AM', '2:32', 'Monday'
 # test_start, test_duration = '10:10 PM', '3:30'
-test_start, test_duration, test_weekday = '11:43 PM', '24:20', 'tueSday'
+# test_start, test_duration, test_weekday = '11:43 PM', '24:20', 'tueSday'
 # test_start, test_duration = '6:30 PM', '205:12'
 
 TIME = {
@@ -59,17 +59,6 @@ def init(time_str, day=None):
         DURATION['hour'] = int(h_m[0])
         DURATION['minute'] = int(h_m[1])
 
-
-def how_many(days_later):
-    """Return a string indicating how many time_objects later."""
-    if days_later == 0:
-        print(f'how_many():66 is {days_later} == 0 reachable')
-        return
-    elif days_later == 1:
-        return ' (next day)'
-    else:
-        return f' ({days_later} days later)'
-
 def clock_12_to_24(hour, meridiem):
     """Convert 12-hour format to 24-hour format."""
     if meridiem == 'PM' and hour != 12:
@@ -89,38 +78,8 @@ def clock_24_to_12(hour):
     else:
         return hour % 12, 'PM'
 
-def fix_overflow(minute):
-    """Check if minutes overflow and adjust hours accordingly."""
-    if minute >= 60:
-        return minute % 60, minute // 60
-    return minute, 0
-
-def fix_overflOw(hour):
-    """Calculate the number of overflow days based on the new hour."""
-    if hour >= 24:
-        overflow_days = hour // 24
-        hour = hour % 24
-        return hour, overflow_days
-    return hour, 0
-
-# def fix_overflow_in(hour=None, minute=None):
-#     """Check if hours overflow and adjust days accordingly."""
-#     if hour:
-#         if hour >= 24:
-#             overflow_days = hour // 24
-#             hour = hour % 24
-#             return hour, overflow_days
-#         return hour, 0
-#
-#     if minute:
-#         if minute >= 60:
-#             return minute % 60, minute // 60
-#         return minute, 0
-
 def fix_overflow_in(time, to = {'over_hours', 'days_later'}):
     """Check if minutes, hours, days overflow and adjust accordingly."""
-    print(f'fix_overflow_in():104 {time}, for_what: {to}')
-    print(f'fix_overflow_in():105 time type: {type(time)} and for_what type: {type(to)}')
 
     what_to_fix = to
 
@@ -140,6 +99,12 @@ def fix_overflow_in(time, to = {'over_hours', 'days_later'}):
             return minute, overflow_hours
         return minute, 0
 
+def how_many(days_later):
+    """Return a string indicating how many days_later."""
+    match days_later:
+        case 1: return ' (next day)'
+
+    return f' ({days_later} days later)'
 
 def add_time(start, duration, day=None):
     if day:
@@ -152,19 +117,20 @@ def add_time(start, duration, day=None):
 
     print(f'Start hour: {TIME["hour"]}, Start minute: {TIME["minute"]}, Start period: {TIME["meridiem"]}, Start day: {TIME["day"] if day else "Day not provided"}')
 
+    # Convert 12'clock to 24'clock and start doing operations
     TIME['hour'] = clock_12_to_24(TIME['hour'], TIME['meridiem'])
 
     TIME['hour'] += DURATION['hour']
     TIME['minute'] += DURATION['minute']
-    # TIME['minute'], over_hours = fix_overflow(TIME['minute'])
+
     TIME['minute'], over_hours = fix_overflow_in(TIME['minute'], to={'over_hours'})
 
     TIME['hour'] += over_hours
-    # TIME['hour'], days_later = fix_overflOw(TIME['hour'])
+
     TIME['hour'], days_later = fix_overflow_in(TIME['hour'], to={'days_later'})
 
     TIME['hour'], TIME['meridiem'] = clock_24_to_12(TIME['hour'])
-
+    # Finished operations and converted back to 12'clock, now define the new time
     new_time = f'{TIME["hour"]}:{TIME["minute"]:02d} {TIME["meridiem"]}'
     if day:
         new_time += f', {TIME["day"][(start_day + days_later) % 7]}'
