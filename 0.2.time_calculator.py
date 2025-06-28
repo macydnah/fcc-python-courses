@@ -54,7 +54,7 @@ def init(time_str, day=None):
         TIME['hour'] = int(h_m[0])
         TIME['minute'] = int(h_m[1])
 
-    else: # it's a DURATION[] time without AM/PM
+    else: # it's a DURATION time without AM/PM
         h_m = h_m_M[0].split(':')
         DURATION['hour'] = int(h_m[0])
         DURATION['minute'] = int(h_m[1])
@@ -78,26 +78,26 @@ def clock_24_to_12(hour):
     else:
         return hour % 12, 'PM'
 
-def fix_overflow_in(time, to = {'over_hours', 'days_later'}):
+def fix_overflow_in(time, **overflow):
     """Check if minutes, hours, days overflow and adjust accordingly."""
+    what_overflow_to_fix = overflow.get('to', {'over_hours', 'days_later'})
+    print(f'fix_overflow_in():105 what_to_fix: {what_overflow_to_fix}')
 
-    what_to_fix = to
-
-    if what_to_fix == {'days_later'}:
-        hour = time
-        if hour >= 24:
-            overflow_days = hour // 24
-            hour = hour % 24
-            return hour, overflow_days
-        return hour, 0
-
-    if what_to_fix == {'over_hours'}:
-        minute = time
-        if minute >= 60:
-            overflow_hours = minute // 60
-            minute = minute % 60
-            return minute, overflow_hours
-        return minute, 0
+    match what_overflow_to_fix:
+        case 'over_hours':
+            minute = time
+            if minute >= 60:
+                overflow_hours = minute // 60
+                minute = minute % 60
+                return minute, overflow_hours
+            return minute, 0
+        case 'days_later':
+            hour = time
+            if hour >= 24:
+                overflow_days = hour // 24
+                hour = hour % 24
+                return hour, overflow_days
+            return hour, 0
 
 def how_many(days_later):
     """Return a string indicating how many days_later."""
@@ -115,7 +115,7 @@ def add_time(start, duration, day=None):
         init(start)
     init(duration)
 
-    print(f'Start hour: {TIME["hour"]}, Start minute: {TIME["minute"]}, Start period: {TIME["meridiem"]}, Start day: {TIME["day"] if day else "Day not provided"}')
+    print(f'Start hour: {TIME["hour"]}, Start minute: {TIME["minute"]}, Start period: {TIME["meridiem"]}, Start day: {TIME["day"][start_day] if day else "N/A"}')
 
     # Convert 12'clock to 24'clock and start doing operations
     TIME['hour'] = clock_12_to_24(TIME['hour'], TIME['meridiem'])
@@ -123,11 +123,11 @@ def add_time(start, duration, day=None):
     TIME['hour'] += DURATION['hour']
     TIME['minute'] += DURATION['minute']
 
-    TIME['minute'], over_hours = fix_overflow_in(TIME['minute'], to={'over_hours'})
+    TIME['minute'], over_hours = fix_overflow_in(TIME['minute'], to='over_hours')
 
     TIME['hour'] += over_hours
 
-    TIME['hour'], days_later = fix_overflow_in(TIME['hour'], to={'days_later'})
+    TIME['hour'], days_later = fix_overflow_in(TIME['hour'], to='days_later')
 
     TIME['hour'], TIME['meridiem'] = clock_24_to_12(TIME['hour'])
     # Finished operations and converted back to 12'clock, now define the new time
