@@ -1,27 +1,3 @@
-def resultado():
-    print(f'\n\
-Final result: {\
-            add_time(\
-            test_start,\
-            test_duration,\
-            test_weekday
-            )\
-            }\
-')
-
-# add_time('3:00 PM', '3:10') should return '6:10 PM'
-# add_time('11:30 AM', '2:32', 'Monday') should return '2:02 PM, Monday'
-# add_time('10:10 PM', '3:30') should return '1:40 AM (next day)'
-# add_time('11:43 PM', '24:20', 'tueSday') should return '12:03 AM, Thursday (2 days later)'
-# add_time('6:30 PM', '205:12') should return '7:42 AM (9 days later)'
-
-test_weekday = ''
-test_start, test_duration = '3:00 PM', '3:10'
-# test_start, test_duration, test_weekday = '11:30 AM', '2:32', 'Monday'
-# test_start, test_duration = '10:10 PM', '3:30'
-# test_start, test_duration, test_weekday = '11:43 PM', '24:20', 'tueSday'
-# test_start, test_duration = '6:30 PM', '205:12'
-
 TIME = {
     'hour': int(),
     'minute': int(),
@@ -142,6 +118,3 @@ def add_time(start, duration, day=None):
         new_time += how_many(days_later)
 
     return new_time
-
-if __name__ == '__main__':
-    resultado()
