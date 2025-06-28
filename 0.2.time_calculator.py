@@ -78,26 +78,47 @@ def clock_24_to_12(hour):
     else:
         return hour % 12, 'PM'
 
+def clock_convert(hour, meridiem, from_to):
+    """Convert time between 12-hour and 24-hour formats."""
+    match from_to:
+        case '12_to_24':
+            if meridiem == 'PM' and hour != 12:
+                return hour + 12
+            elif meridiem == 'AM' and hour == 12:
+                return 0
+            return hour
+        case '24_to_12':
+            if hour == 0:
+                return 12, 'AM'
+            elif hour < 12:
+                return hour % 12, 'AM'
+            elif hour == 12:
+                return hour, 'PM'
+            else:
+                return hour % 12, 'PM'
+        case _:
+            raise ValueError("Invalid conversion type. Use '12_to_24' or '24_to_12'.")
+
 def fix_overflow_in(time, **overflow):
     """Check if minutes, hours, days overflow and adjust accordingly."""
-    what_overflow_to_fix = overflow.get('to', {'over_hours', 'days_later'})
-    print(f'fix_overflow_in():105 what_to_fix: {what_overflow_to_fix}')
-
-    match what_overflow_to_fix:
-        case 'over_hours':
-            minute = time
-            if minute >= 60:
-                overflow_hours = minute // 60
-                minute = minute % 60
-                return minute, overflow_hours
-            return minute, 0
-        case 'days_later':
-            hour = time
-            if hour >= 24:
-                overflow_days = hour // 24
-                hour = hour % 24
-                return hour, overflow_days
-            return hour, 0
+    for fix in overflow.values():
+        match fix:
+            case 'over_hours':
+                minute = time
+                if minute >= 60:
+                    overflow_hours = minute // 60
+                    minute = minute % 60
+                    return minute, overflow_hours
+                return minute, 0
+            case 'days_later':
+                hour = time
+                if hour >= 24:
+                    overflow_days = hour // 24
+                    hour = hour % 24
+                    return hour, overflow_days
+                return hour, 0
+            case _:
+                raise ValueError("Invalid overflow type. Use to='over_hours' or to='days_later'.")
 
 def how_many(days_later):
     """Return a string indicating how many days_later."""
@@ -118,7 +139,8 @@ def add_time(start, duration, day=None):
     print(f'Start hour: {TIME["hour"]}, Start minute: {TIME["minute"]}, Start period: {TIME["meridiem"]}, Start day: {TIME["day"][start_day] if day else "N/A"}')
 
     # Convert 12'clock to 24'clock and start doing operations
-    TIME['hour'] = clock_12_to_24(TIME['hour'], TIME['meridiem'])
+    # TIME['hour'] = clock_12_to_24(TIME['hour'], TIME['meridiem'])
+    TIME['hour'] = clock_convert(TIME['hour'], TIME['meridiem'], '12_to_24')
 
     TIME['hour'] += DURATION['hour']
     TIME['minute'] += DURATION['minute']
@@ -129,7 +151,8 @@ def add_time(start, duration, day=None):
 
     TIME['hour'], days_later = fix_overflow_in(TIME['hour'], to='days_later')
 
-    TIME['hour'], TIME['meridiem'] = clock_24_to_12(TIME['hour'])
+    # TIME['hour'], TIME['meridiem'] = clock_24_to_12(TIME['hour'])
+    TIME['hour'], TIME['meridiem'] = clock_convert(TIME['hour'], TIME['meridiem'], '24_to_12')
     # Finished operations and converted back to 12'clock, now define the new time
     new_time = f'{TIME["hour"]}:{TIME["minute"]:02d} {TIME["meridiem"]}'
     if day:
