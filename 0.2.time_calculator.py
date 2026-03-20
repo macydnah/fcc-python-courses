@@ -10,7 +10,7 @@ TIME = {
         'Friday',
         'Saturday',
         'Sunday'
-        ]
+    ]
 }
 
 DURATION = {
